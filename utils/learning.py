@@ -7,7 +7,7 @@ def cropping():
     img = cv2.imread('/Users/akhilkodumuri/Desktop/image.img')
     print(img.shape) # Print image shape
     cv2.imshow("original", img)
-    cv2.waitKey(0)
+    cv2.waitKey(1)
 
     # Cropping an image
     cropped_image = img[80:280, 150:330]
@@ -15,7 +15,7 @@ def cropping():
     print("cropping image")
     # Display cropped image
     cv2.imshow("cropped", cropped_image)
-    cv2.waitKey(0)
+    cv2.waitKey(1)
 
     # Save the cropped image
     # cv2.imwrite("Cropped Image.jpg", cropped_image)
@@ -193,9 +193,57 @@ def readAndWrite():
 def imageRotationAndTranslation():
     # link to tutorial https://learnopencv.com/image-rotation-and-translation-using-opencv/
 
-    
-    
+    print("starting image rotation example")
+
+    # Reading the image
+    image = cv2.imread('image.jpg')
+
+    # dividing height and width by 2 to get the center of the image
+    height, width = image.shape[:2]
+    # get the center coordinates of the image to create the 2D rotation matrix
+    center = (width/2, height/2)
+
+    # using cv2.getRotationMatrix2D() to get the rotation matrix
+    rotate_matrix = cv2.getRotationMatrix2D(center=center, angle=45, scale=1)
+
+    # rotate the image using cv2.warpAffine
+    rotated_image = cv2.warpAffine(src=image, M=rotate_matrix, dsize=(width, height))
+
+    cv2.imshow('Original image', image)
+    cv2.imshow('Rotated image', rotated_image)
+    # wait indefinitely, press any key on keyboard to exit
+    cv2.waitKey(1)
+    cv2.destroyAllWindows()
+    # save the rotated image to disk
+    # cv2.imwrite('rotated_image.jpg', rotated_image)
+
+    print("starting image translation example")
+
+    # read the image 
+    image = cv2.imread('image.jpg')
+    # get the width and height of the image
+    height, width = image.shape[:2]
+    # get tx and ty values for translation
+    # you can specify any value of your choice
+    tx, ty = width / 4, height / 4
+
+    # create the translation matrix using tx and ty, it is a NumPy array 
+    translation_matrix = np.array([
+        [1, 0, tx],
+        [0, 1, ty]
+    ], dtype=np.float32)
+
+    # apply the translation to the image
+    translated_image = cv2.warpAffine(src=image, M=translation_matrix, dsize=(width, height))
+    # display the original and the Translated images
+    cv2.imshow('Translated image', translated_image)
+    cv2.imshow('Original image', image)
+    cv2.waitKey(0)
+    # save the translated image to disk
+    cv2.imwrite('translated_image.jpg', translated_image)
     return "finished rotation and translation tutorial"
+
+
 
 if __name__ == "__main__":
     cropping()
