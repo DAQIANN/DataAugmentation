@@ -295,13 +295,162 @@ def annotatingImages():
     #org: Where you want to put the text
     org = (50,350)
     # write the text on the input image
-    cv2.putText(imageText, text, org, fontFace = cv2.FONT_HERSHEY_COMPLEX, fontScale = 1.5, color = (250,225,100))))
+    cv2.putText(imageText, text, org, fontFace = cv2.FONT_HERSHEY_COMPLEX, fontScale = 1.5, color = (250,225,100))
     # display the output image with text over it
     cv2.imshow("Image Text",imageText)
     cv2.waitKey(1)
     cv2.destroyAllWindows()
 
     return "finished annotating image tutorial"
+
+def colorSpaces():
+    # link to tutorial https://learnopencv.com/color-spaces-in-opencv-cpp-python/
+    # Open cv loads images in the BGR Color Space
+    bright = cv2.imread('cube1.jpg')
+    dark = cv2.imread('cube8.jpg')
+
+    # LAB Color Space
+    brightLAB = cv2.cvtColor(bright, cv2.COLOR_BGR2LAB)
+    darkLAB = cv2.cvtColor(dark, cv2.COLOR_BGR2LAB)
+
+    # bRCrCb Color Space
+    brightYCB = cv2.cvtColor(bright, cv2.COLOR_BGR2YCrCb)
+    darkYCB = cv2.cvtColor(dark, cv2.COLOR_BGR2YCrCb)
+
+    # HSV Color Space
+    brightHSV = cv2.cvtColor(bright, cv2.COLOR_BGR2HSV)
+    darkHSV = cv2.cvtColor(dark, cv2.COLOR_BGR2HSV)
+
+
+
+    return "Finished color spaces tutorial"
+
+def convolution():
+    image = cv2.imread('test.jpg')
+    """
+    Apply identity kernel
+    """
+    kernel1 = np.array([[0, 0, 0],
+                        [0, 1, 0],
+                        [0, 0, 0]])
+    # filter2D() function can be used to apply kernel to an image.
+    # Where ddepth is the desired depth of final image. ddepth is -1 if...
+    # ... depth is same as original or source image.
+    identity = cv2.filter2D(src=image, ddepth=-1, kernel=kernel1)
+
+    # We should get the same image
+    cv2.imshow('Original', image)
+    cv2.imshow('Identity', identity)
+
+    cv2.waitKey()
+    cv2.imwrite('identity.jpg', identity)
+    cv2.destroyAllWindows()
+    
+    # end identity kernel
+
+    # Begin custom blur of image using 2d convolution kernel
+    """
+    Apply blurring kernel
+    """
+    kernel2 = np.ones((5, 5), np.float32) / 25
+    img = cv2.filter2D(src=image, ddepth=-1, kernel=kernel2)
+
+    cv2.imshow('Original', image)
+    cv2.imshow('Kernel Blur', img)
+
+    cv2.waitKey()
+    cv2.imwrite('blur_kernel.jpg', img)
+    cv2.destroyAllWindows()
+    # End custom blur of image using 2d convolution kernel
+
+    # Begin blur using Opencv blur function 
+    """
+    Apply blur using `blur()` function
+    """
+    img_blur = cv2.blur(src=image, ksize=(5,5)) # Using the blur function to blur an image where ksize is the kernel size
+
+    # Display using cv2.imshow()
+    cv2.imshow('Original', image)
+    cv2.imshow('Blurred', img_blur)
+
+    cv2.waitKey()
+    cv2.imwrite('blur.jpg', img_blur)
+    cv2.destroyAllWindows()
+    # End blur using Opencv blur function 
+
+    # Begin guassian blur
+    """
+    Apply Gaussian blur
+    """
+    # sigmaX is Gaussian Kernel standard deviation 
+    # ksize is kernel size
+    gaussian_blur = cv2.GaussianBlur(src=image, ksize=(5,5), \\
+    sigmaX=0, sigmaY=0)
+
+    cv2.imshow('Original', image)
+    cv2.imshow('Gaussian Blurred', gaussian_blur)
+        
+    cv2.waitKey()
+    cv2.imwrite('gaussian_blur.jpg', gaussian_blur)
+    cv2.destroyAllWindows()
+    # End guassian blur
+
+    # Begin median blur
+    """
+    Apply Median blur
+    """
+    # medianBlur() is used to apply Median blur to image
+    # ksize is the kernel size
+    median = cv2.medianBlur(src=image, ksize=5)
+
+    cv2.imshow('Original', image)
+    cv2.imshow('Median Blurred', median)
+        
+    cv2.waitKey()
+    cv2.imwrite('median_blur.jpg', median)
+    cv2.destroyAllWindows()
+    # End median blur
+
+    # Begin Sharpening an Image Using Custom 2D-Convolution Kernels
+    """
+    Apply sharpening using kernel
+    """
+    kernel3 = np.array([[0, -1,  0],
+                    [-1,  5, -1],
+                        [0, -1,  0]])
+    sharp_img = cv2.filter2D(src=image, ddepth=-1, kernel=kernel3)
+
+    cv2.imshow('Original', image)
+    cv2.imshow('Sharpened', sharp_img)
+        
+    cv2.waitKey()
+    cv2.imwrite('sharp_image.jpg', sharp_img)
+    cv2.destroyAllWindows()
+    # End Sharpening an Image Using Custom 2D-Convolution Kernels
+
+    # Begin Applying Bilateral Filtering to an Image in OpenCV
+    """
+    Apply Bilateral Filtering
+    """
+    # Using the function bilateralFilter() where d is diameter of each...
+    # ...pixel neighborhood that is used during filtering.
+    # sigmaColor is used to filter sigma in the color space.
+    # sigmaSpace is used to filter sigma in the coordinate space.
+    bilateral_filter = cv2.bilateralFilter(src=image, d=9, sigmaColor=75, sigmaSpace=75)
+
+    cv2.imshow('Original', image)
+    cv2.imshow('Bilateral Filtering', bilateral_filter)
+
+    cv2.waitKey(0)
+    cv2.imwrite('bilateral_filtering.jpg', bilateral_filter)
+    cv2.destroyAllWindows()
+    # End Applying Bilateral Filtering to an Image in OpenCV
+
+
+
+    return "Finished convolution tutorial"
+
+
 
 if __name__ == "__main__":
     cropping()
