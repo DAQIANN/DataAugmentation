@@ -479,8 +479,135 @@ def imageThresholding():
 
     return "Finished thresholding tutorial"
 
+def blobDetection():
+    # Setup SimpleBlobDetector parameters.
+    params = cv2.SimpleBlobDetector_Params()
 
+    # Change thresholds
+    params.minThreshold = 10;
+    params.maxThreshold = 200;
 
+    # Filter by Area.
+    params.filterByArea = True
+    params.minArea = 1500
+
+    # Filter by Circularity
+    params.filterByCircularity = True
+    params.minCircularity = 0.1
+
+    # Filter by Convexity
+    params.filterByConvexity = True
+    params.minConvexity = 0.87
+
+    # Filter by Inertia
+    params.filterByInertia = True
+    params.minInertiaRatio = 0.01
+
+    # Create a detector with the parameters
+    ver = (cv2.__version__).split('.')
+    if int(ver[0]) < 3 :
+        detector = cv2.SimpleBlobDetector(params)
+    else : 
+        detector = cv2.SimpleBlobDetector_create(params)
+    return "Finished blob detection tutorial"
+
+def edgeDetection():
+    # Read the original image
+    img = cv2.imread('test.jpg') 
+    # Display original image
+    cv2.imshow('Original', img)
+    cv2.waitKey(0)
+
+    # Convert to graycsale
+    img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    # Blur the image for better edge detection
+    img_blur = cv2.GaussianBlur(img_gray, (3,3), 0) 
+
+    # Sobel Edge Detection
+    sobelx = cv2.Sobel(src=img_blur, ddepth=cv2.CV_64F, dx=1, dy=0, ksize=5) # Sobel Edge Detection on the X axis
+    sobely = cv2.Sobel(src=img_blur, ddepth=cv2.CV_64F, dx=0, dy=1, ksize=5) # Sobel Edge Detection on the Y axis
+    sobelxy = cv2.Sobel(src=img_blur, ddepth=cv2.CV_64F, dx=1, dy=1, ksize=5) # Combined X and Y Sobel Edge Detection
+    # Display Sobel Edge Detection Images
+    cv2.imshow('Sobel X', sobelx)
+    cv2.waitKey(0)
+    cv2.imshow('Sobel Y', sobely)
+    cv2.waitKey(0)
+    cv2.imshow('Sobel X Y using Sobel() function', sobelxy)
+    cv2.waitKey(0)
+
+    # Canny Edge Detection
+    edges = cv2.Canny(image=img_blur, threshold1=100, threshold2=200) # Canny Edge Detection
+    # Display Canny Edge Detection Image
+    cv2.imshow('Canny Edge Detection', edges)
+    cv2.waitKey(0)
+
+    cv2.destroyAllWindows()
+    return "Finished edge detection tutorial"
+
+def mouseGUI():
+    # Lists to store the points
+    top_left_corner=[]
+    bottom_right_corner=[]
+    def drawRectangle(action, x, y, flags, *userdata):
+        # Referencing global variables 
+        global top_left_corner, bottom_right_corner
+        # Mark the top left corner, when left mouse button is pressed
+        if action == cv2.EVENT_LBUTTONDOWN:
+            top_left_corner = [(x,y)]
+            # When left mouse button is released, mark bottom right corner
+        elif action == cv2.EVENT_LBUTTONUP:
+            bottom_right_corner = [(x,y)]    
+            # Draw the rectangle
+            cv2.rectangle(image, top_left_corner[0], bottom_right_corner[0], (0,255,0),2,8)
+            cv2.imshow("Window",image)
+    # Read Images
+    image = cv2.imread("../Input/sample.jpg")
+    # Make a temporary image, will be useful to clear the drawing
+    temp = image.copy()
+    # Create a named window.
+    cv2.namedWindow("Window")
+    # highgui function called when mouse events occur
+    cv2.setMouseCallback("Window", drawRectangle)
+    k=0
+    while k!=113:
+    cv2.imshow("Window", image)
+    k = cv2.waitKey(0)
+    if (k == 99):
+        image= temp.copy()
+        cv2.imshow("Window", image)
+    cv2.destroyAllWindows()
+
+    
+    return "Finished mouse GUI tutorial"
+
+def trackbar():
+    maxScaleUp = 100
+    scaleFactor = 1
+    windowName = "Resize Image"
+    trackbarValue = "Scale"
+
+    # read the image
+    image = cv2.imread("../Input/sample.jpg")
+
+    # Create a window to display results and  set the flag to Autosize
+    cv2.namedWindow(windowName, cv2.WINDOW_AUTOSIZE)
+
+    # Callback functions
+    def scaleImage(*args):
+        # Get the scale factor from the trackbar 
+        scaleFactor = 1+ args[0]/100.0
+        # Resize the image
+        scaledImage = cv2.resize(image, None, fx=scaleFactor, fy = scaleFactor, interpolation = cv2.INTER_LINEAR)
+        cv2.imshow(windowName, scaledImage)
+
+    # Create trackbar and associate a callback function
+    cv2.createTrackbar(trackbarValue, windowName, scaleFactor, maxScaleUp, scaleImage)
+
+    # Display the image
+    cv2.imshow(windowName, image)
+    c = cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    return "Finished trackbar tutorial"
 
 if __name__ == "__main__":
-    cropping()
+    mouseGUI()
