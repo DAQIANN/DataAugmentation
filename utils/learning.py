@@ -445,10 +445,40 @@ def convolution():
     cv2.imwrite('bilateral_filtering.jpg', bilateral_filter)
     cv2.destroyAllWindows()
     # End Applying Bilateral Filtering to an Image in OpenCV
-
-
-
     return "Finished convolution tutorial"
+
+def imageThresholding():
+    # Read image
+    src = cv2.imread("threshold.png", cv2.IMREAD_GRAYSCALE)
+
+    # Set threshold and maxValue
+    thresh = 0
+    maxValue = 255 
+
+    print("Starting binray thresholding")
+    # Basic threshold example using binary thresholding
+    th, dst = cv2.threshold(src, thresh, maxValue, cv2.THRESH_BINARY)
+
+    print("Starting inverse binary thresholding")
+    th, dst = cv2.threshold(src, thresh, maxValue, cv2.THRESH_BINARY_INV)
+
+
+    print("Starting truncate thresholding")
+    """
+    # Truncate Threshold
+    if src(x,y) > thresh
+        dst(x,y) = thresh
+    else
+        dst(x,y) = src(x,y)
+    """
+    th, dst = cv2.threshold(src, thresh, maxValue, cv2.THRESH_TRUNC)
+
+    return "Image Thresholding Tutorial"
+
+    
+
+    return "Finished thresholding tutorial"
+
 
 
 
